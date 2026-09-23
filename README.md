@@ -1,8 +1,3 @@
-Got you bro 😄 You want **ONE complete README.md**, inside **one single copy-paste block**, so you can select it → copy → paste directly into `README.md`.
-
-Here you go:
-
-````markdown
 # 🏠 RoomMate
 
 > **Household responsibilities, made simple.**
@@ -353,80 +348,6 @@ POST /api/sunday-cleaning/create
 
 ---
 
-## 💻 Local Development
-
-### Requirements
-
-Install:
-
-* Flutter
-* Dart
-* Node.js
-* MongoDB
-* Git
-
-### Clone Repository
-
-```bash
-git clone https://github.com/Aldojason/RoomMate.git
-cd RoomMate
-```
-
-### Install Flutter Dependencies
-
-```bash
-flutter pub get
-```
-
-### Run Flutter App
-
-```bash
-flutter run
-```
-
-### Run Backend
-
-Open another terminal:
-
-```bash
-cd backend
-npm install
-node server.js
-```
-
-The backend runs locally on:
-
-```text
-http://localhost:5000
-```
-
----
-
-## ⚙️ Environment Variables
-
-The backend requires the following environment variables:
-
-```text
-MONGO_URI
-JWT_SECRET
-CLOUDINARY_CLOUD_NAME
-CLOUDINARY_API_KEY
-CLOUDINARY_API_SECRET
-```
-
-Create a `.env` file inside the `backend` directory:
-
-```text
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-```
-
-Do not commit `.env` files or secret credentials to GitHub.
-
----
 
 ## 🚀 Production
 
@@ -590,6 +511,4 @@ Computer Science & Engineering
 
 GitHub: [Aldojason](https://github.com/Aldojason)
 
----
 
-## 📄 License
