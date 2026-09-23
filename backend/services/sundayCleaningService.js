@@ -3,8 +3,8 @@ const User = require("../models/User");
 const Task = require("../models/Task");
 
 // Team definitions
-const TEAM_A = ["Jason", "Chandru", "Deepan"];
-const TEAM_B = ["Harish", "Mohan", "Tamil"];
+const TEAM_A = ["Chandru", "Deepan", "Jason"];
+const TEAM_B = ["Mohan", "Tamil", "Harish"];
 
 // Get users belonging to a team
 async function getTeamMembers(team) {
@@ -13,7 +13,7 @@ async function getTeamMembers(team) {
     const users = await User.find({
         name: { $in: names },
         team,
-    }).sort({ name: 1 });
+    });
 
     if (users.length !== 3) {
         throw new Error(
@@ -21,7 +21,12 @@ async function getTeamMembers(team) {
         );
     }
 
-    return users;
+    // Keep the exact rotation order defined above.
+    const userMap = new Map(
+        users.map((user) => [user.name, user])
+    );
+
+    return names.map((name) => userMap.get(name));
 }
 
 // Get the opposite team
@@ -33,18 +38,27 @@ function getOppositeTeam(team) {
 async function getHouseTeamForSunday(sundayDate) {
     const date = new Date(sundayDate);
 
-    // Look for the most recent Sunday cleaning record
+    // Check the most recent Sunday before this date.
     const previous = await SundayCleaning.findOne({
         sundayDate: { $lt: date },
     }).sort({ sundayDate: -1 });
 
-    // First Sunday starts with Team A
-    if (!previous) {
-        return "A";
+    if (previous) {
+        return previous.houseTeam === "A" ? "B" : "A";
     }
 
-    // Alternate every Sunday
-    return previous.houseTeam === "A" ? "B" : "A";
+    // If there is no previous record, check the next
+    // scheduled Sunday and work backwards from it.
+    const next = await SundayCleaning.findOne({
+        sundayDate: { $gt: date },
+    }).sort({ sundayDate: 1 });
+
+    if (next) {
+        return next.houseTeam === "A" ? "B" : "A";
+    }
+
+    // Only use Team A when there are no Sunday records at all.
+    return "A";
 }
 
 // Get the bathroom member from the opposite team
