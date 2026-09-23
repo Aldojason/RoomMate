@@ -37,6 +37,7 @@ dependencies:
   http: ^1.6.0
   shared_preferences: ^2.5.5
   image_picker: ^1.2.3
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -90,3 +91,10 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/app_icon.png"
+  adaptive_icon_background: "#F8F4E8"
+  adaptive_icon_foreground: "assets/app_icon.png"

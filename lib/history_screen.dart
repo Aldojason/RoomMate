@@ -33,9 +33,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   // ============================================================
 
   DateTime _istNow() {
-    return DateTime.now().toUtc().add(
-          const Duration(hours: 5, minutes: 30),
-        );
+    return DateTime.now().toUtc().add(const Duration(hours: 5, minutes: 30));
   }
 
   DateTime? _parseIST(dynamic value) {
@@ -45,9 +43,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     if (parsed == null) return null;
 
-    return parsed.toUtc().add(
-          const Duration(hours: 5, minutes: 30),
-        );
+    return parsed.toUtc().add(const Duration(hours: 5, minutes: 30));
   }
 
   String _istDateKey(dynamic value) {
@@ -59,15 +55,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final day = date.day.toString().padLeft(2, '0');
 
     return '${date.year}-$month-$day';
-  }
-
-  bool _isTodayOrPast(dynamic value) {
-    final taskDate = _istDateKey(value);
-    final today = _istDateKey(_istNow());
-
-    if (taskDate.isEmpty) return false;
-
-    return taskDate.compareTo(today) <= 0;
   }
 
   // ============================================================
@@ -110,7 +97,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   List<dynamic> get historyTasks {
     return tasks.where((task) {
-      return _isTodayOrPast(task['dueDate']);
+      final status = (task['status'] ?? '').toString().toLowerCase();
+
+      return status == 'completed' || status == 'missed';
     }).toList();
   }
 
@@ -127,19 +116,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     if (selectedFilter == 'Trash') {
       return pastAndTodayTasks
-          .where(
-            (task) =>
-                task['type']?.toString().toLowerCase() == 'trash',
-          )
+          .where((task) => task['type']?.toString().toLowerCase() == 'trash')
           .toList();
     }
 
     if (selectedFilter == 'Water') {
       return pastAndTodayTasks
-          .where(
-            (task) =>
-                task['type']?.toString().toLowerCase() == 'water',
-          )
+          .where((task) => task['type']?.toString().toLowerCase() == 'water')
           .toList();
     }
 
@@ -160,19 +143,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   int get trashCount {
     return historyTasks
-        .where(
-          (task) =>
-              task['type']?.toString().toLowerCase() == 'trash',
-        )
+        .where((task) => task['type']?.toString().toLowerCase() == 'trash')
         .length;
   }
 
   int get waterCount {
     return historyTasks
-        .where(
-          (task) =>
-              task['type']?.toString().toLowerCase() == 'water',
-        )
+        .where((task) => task['type']?.toString().toLowerCase() == 'water')
         .length;
   }
 
@@ -187,8 +164,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   int get completedCount {
     return historyTasks
         .where(
-          (task) =>
-              task['status']?.toString().toLowerCase() == 'completed',
+          (task) => task['status']?.toString().toLowerCase() == 'completed',
         )
         .length;
   }
@@ -245,11 +221,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       height: 76,
       padding: const EdgeInsets.symmetric(horizontal: 30),
       decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Color(0xFFECEEF5),
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xFFECEEF5))),
       ),
       child: Row(
         children: [
@@ -267,13 +239,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   color: dark,
                 ),
               ),
-              Text(
-                'History',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: grey,
-                ),
-              ),
+              Text('History', style: TextStyle(fontSize: 15, color: grey)),
             ],
           ),
           const Spacer(),
@@ -307,30 +273,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 SizedBox(height: 6),
                 Text(
                   'Past household activity and log',
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: grey,
-                  ),
+                  style: TextStyle(fontSize: 17, color: grey),
                 ),
               ],
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: const Color(0xFFDDE9FF),
               borderRadius: BorderRadius.circular(22),
             ),
             child: const Row(
               children: [
-                Icon(
-                  Icons.verified_outlined,
-                  size: 19,
-                  color: primary,
-                ),
+                Icon(Icons.verified_outlined, size: 19, color: primary),
                 SizedBox(width: 5),
                 Text(
                   'Verified Log',
@@ -365,11 +321,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           const CircleAvatar(
             radius: 30,
             backgroundColor: Color(0xFF5BE8B1),
-            child: Icon(
-              Icons.eco_outlined,
-              color: Color(0xFF087A5C),
-              size: 32,
-            ),
+            child: Icon(Icons.eco_outlined, color: Color(0xFF087A5C), size: 32),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -398,10 +350,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           const CircleAvatar(
             radius: 25,
             backgroundColor: blue,
-            child: Icon(
-              Icons.celebration_outlined,
-              color: primary,
-            ),
+            child: Icon(Icons.celebration_outlined, color: primary),
           ),
         ],
       ),
@@ -425,17 +374,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
               historyTasks.length.toString(),
             ),
             const SizedBox(width: 10),
-            _filter(
-              'Trash',
-              selectedFilter == 'Trash',
-              trashCount.toString(),
-            ),
+            _filter('Trash', selectedFilter == 'Trash', trashCount.toString()),
             const SizedBox(width: 10),
-            _filter(
-              'Water',
-              selectedFilter == 'Water',
-              waterCount.toString(),
-            ),
+            _filter('Water', selectedFilter == 'Water', waterCount.toString()),
             const SizedBox(width: 10),
             _filter(
               'Cleaning',
@@ -448,11 +389,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 
-  Widget _filter(
-    String text,
-    bool selected,
-    String count,
-  ) {
+  Widget _filter(String text, bool selected, String count) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -463,9 +400,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         height: 46,
         padding: const EdgeInsets.symmetric(horizontal: 18),
         decoration: BoxDecoration(
-          color: selected
-              ? primary
-              : const Color(0xFFE5EDFF),
+          color: selected ? primary : const Color(0xFFE5EDFF),
           borderRadius: BorderRadius.circular(24),
         ),
         child: Row(
@@ -506,11 +441,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     if (loading) {
       return const Padding(
         padding: EdgeInsets.all(40),
-        child: Center(
-          child: CircularProgressIndicator(
-            color: primary,
-          ),
-        ),
+        child: Center(child: CircularProgressIndicator(color: primary)),
       );
     }
 
@@ -534,16 +465,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     sortedTasks.sort((a, b) {
       final aDate =
-          DateTime.tryParse(
-            a['dueDate']?.toString() ?? '',
-          ) ??
-          DateTime(2000);
+          DateTime.tryParse(a['dueDate']?.toString() ?? '') ?? DateTime(2000);
 
       final bDate =
-          DateTime.tryParse(
-            b['dueDate']?.toString() ?? '',
-          ) ??
-          DateTime(2000);
+          DateTime.tryParse(b['dueDate']?.toString() ?? '') ?? DateTime(2000);
 
       return bDate.compareTo(aDate);
     });
@@ -558,21 +483,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 sortedTasks[i]['dueDate'],
               ))
             Padding(
-              padding: EdgeInsets.only(
-                top: i == 0 ? 0 : 30,
-                bottom: 10,
-              ),
+              padding: EdgeInsets.only(top: i == 0 ? 0 : 30, bottom: 10),
               child: _date(
                 _formatDate(sortedTasks[i]['dueDate']),
                 _dateLabel(sortedTasks[i]['dueDate']),
-                i == 0
-                    ? primary
-                    : const Color(0xFF707B7D),
+                i == 0 ? primary : const Color(0xFF707B7D),
               ),
             ),
           _historyCardFromTask(sortedTasks[i]),
-          if (i < sortedTasks.length - 1)
-            const SizedBox(height: 12),
+          if (i < sortedTasks.length - 1) const SizedBox(height: 12),
         ],
       ],
     );
@@ -582,31 +501,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
   // HISTORY CARD DATA
   // ============================================================
 
-  Widget _historyCardFromTask(
-    Map<String, dynamic> task,
-  ) {
-    final type =
-        task['type']?.toString().toLowerCase() ?? '';
+  Widget _historyCardFromTask(Map<String, dynamic> task) {
+    final type = task['type']?.toString().toLowerCase() ?? '';
 
-    final status =
-        task['status']?.toString() ?? 'pending';
+    final status = task['status']?.toString() ?? 'pending';
 
     final assignedTo = task['assignedTo'];
 
     String person = 'Household';
 
     if (assignedTo is Map<String, dynamic>) {
-      person =
-          assignedTo['name']?.toString() ??
-          'Household';
+      person = assignedTo['name']?.toString() ?? 'Household';
     }
 
-    final title =
-        task['title']?.toString() ??
-        _defaultTitle(type);
+    final title = task['title']?.toString() ?? _defaultTitle(type);
 
-    final dateString =
-        task['dueDate']?.toString();
+    final dateString = task['dueDate']?.toString();
 
     final time = _formatTime(dateString);
 
@@ -693,15 +603,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
   // SAME DAY - IST
   // ============================================================
 
-  bool _sameDay(
-    dynamic first,
-    dynamic second,
-  ) {
+  bool _sameDay(dynamic first, dynamic second) {
     final firstDate = _istDateKey(first);
     final secondDate = _istDateKey(second);
 
-    if (firstDate.isEmpty ||
-        secondDate.isEmpty) {
+    if (firstDate.isEmpty || secondDate.isEmpty) {
       return false;
     }
 
@@ -750,20 +656,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     final now = _istNow();
 
-    final today = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    );
+    final today = DateTime(now.year, now.month, now.day);
 
-    final taskDay = DateTime(
-      taskDate.year,
-      taskDate.month,
-      taskDate.day,
-    );
+    final taskDay = DateTime(taskDate.year, taskDate.month, taskDate.day);
 
-    final difference =
-        today.difference(taskDay).inDays;
+    final difference = today.difference(taskDay).inDays;
 
     if (difference == 0) {
       return 'Today';
@@ -785,36 +682,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
   // ============================================================
 
   String _formatTime(dynamic value) {
-    final date =
-        DateTime.tryParse(
-          value?.toString() ?? '',
-        );
+    final date = DateTime.tryParse(value?.toString() ?? '');
 
     if (date == null) {
       return '';
     }
 
-    final local =
-        date.toUtc().add(
-              const Duration(
-                hours: 5,
-                minutes: 30,
-              ),
-            );
+    final local = date.toUtc().add(const Duration(hours: 5, minutes: 30));
 
     final hour = local.hour == 0
         ? 12
         : local.hour > 12
-            ? local.hour - 12
-            : local.hour;
+        ? local.hour - 12
+        : local.hour;
 
-    final minute =
-        local.minute
-            .toString()
-            .padLeft(2, '0');
+    final minute = local.minute.toString().padLeft(2, '0');
 
-    final period =
-        local.hour >= 12 ? 'PM' : 'AM';
+    final period = local.hour >= 12 ? 'PM' : 'AM';
 
     return '$hour:$minute $period';
   }
@@ -823,25 +707,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
   // DATE HEADER
   // ============================================================
 
-  Widget _date(
-    String date,
-    String label,
-    Color color,
-  ) {
+  Widget _date(String date, String label, Color color) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(
-        horizontal: 36,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 36),
       child: Row(
         children: [
           Container(
             width: 11,
             height: 11,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(width: 11),
           Text(
@@ -854,12 +728,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
           if (label.isNotEmpty) ...[
             const SizedBox(width: 8),
-            Text(
-              '• $label',
-              style: const TextStyle(
-                color: grey,
-              ),
-            ),
+            Text('• $label', style: const TextStyle(color: grey)),
           ],
         ],
       ),
@@ -879,16 +748,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
     bool completed,
   ) {
     return Container(
-      margin:
-          const EdgeInsets.symmetric(
-        horizontal: 30,
-      ),
-      padding:
-          const EdgeInsets.all(15),
+      margin: const EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
@@ -896,65 +760,47 @@ class _HistoryScreenState extends State<HistoryScreen> {
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color:
-                  const Color(0xFFE5EEFF),
-              borderRadius:
-                  BorderRadius.circular(13),
+              color: const Color(0xFFE5EEFF),
+              borderRadius: BorderRadius.circular(13),
             ),
-            child: Icon(
-              icon,
-              color:
-                  const Color(0xFF596274),
-            ),
+            child: Icon(icon, color: const Color(0xFF596274)),
           ),
           const SizedBox(width: 13),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
                   maxLines: 1,
-                  overflow:
-                      TextOverflow.ellipsis,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 17,
-                    fontWeight:
-                        FontWeight.w700,
+                    fontWeight: FontWeight.w700,
                     color: dark,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   '$person • $time',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: grey,
-                  ),
+                  style: const TextStyle(fontSize: 14, color: grey),
                 ),
               ],
             ),
           ),
           Container(
-            padding:
-                const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 7,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
             decoration: BoxDecoration(
               color: completed
                   ? const Color(0xFF5BE8B1)
                   : const Color(0xFFFFD8D7),
-              borderRadius:
-                  BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               status,
               style: TextStyle(
                 fontSize: 12,
-                fontWeight:
-                    FontWeight.w700,
+                fontWeight: FontWeight.w700,
                 color: completed
                     ? const Color(0xFF087A5C)
                     : const Color(0xFFB42C31),
@@ -970,29 +816,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
   // BOTTOM NAVIGATION
   // ============================================================
 
-  Widget _navigation(
-    BuildContext context,
-  ) {
+  Widget _navigation(BuildContext context) {
     return Container(
       height: 80,
       decoration: const BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: Color(0xFFE8EAF0),
-          ),
-        ),
+        border: Border(top: BorderSide(color: Color(0xFFE8EAF0))),
       ),
       child: Row(
-        mainAxisAlignment:
-            MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _nav(
-            context,
-            Icons.home_outlined,
-            'Home',
-            false,
-            const HomeScreen(),
-          ),
+          _nav(context, Icons.home_outlined, 'Home', false, const HomeScreen()),
           _nav(
             context,
             Icons.checklist_rounded,
@@ -1025,32 +858,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
           : () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => page,
-                ),
+                MaterialPageRoute(builder: (_) => page),
               );
             },
       child: SizedBox(
         width: 90,
         child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 27,
-              color:
-                  selected ? primary : grey,
-            ),
+            Icon(icon, size: 27, color: selected ? primary : grey),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color:
-                    selected ? primary : grey,
-                fontWeight: selected
-                    ? FontWeight.w600
-                    : FontWeight.w400,
+                color: selected ? primary : grey,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
               ),
             ),
           ],
@@ -1069,13 +891,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       height: 44,
       decoration: BoxDecoration(
         color: primary,
-        borderRadius:
-            BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: const Icon(
-        Icons.home,
-        color: Colors.white,
-      ),
+      child: const Icon(Icons.home, color: Colors.white),
     );
   }
 
@@ -1087,14 +905,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Container(
       width: 44,
       height: 44,
-      decoration: const BoxDecoration(
-        color: primary,
-        shape: BoxShape.circle,
-      ),
-      child: const Icon(
-        Icons.person_outline,
-        color: Colors.white,
-      ),
+      decoration: const BoxDecoration(color: primary, shape: BoxShape.circle),
+      child: const Icon(Icons.person_outline, color: Colors.white),
     );
   }
 
@@ -1102,18 +914,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
   // MESSAGE
   // ============================================================
 
-  void _showMessage(
-    String message, {
-    bool isError = false,
-  }) {
+  void _showMessage(String message, {bool isError = false}) {
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor:
-            isError ? Colors.red : primary,
+        backgroundColor: isError ? Colors.red : primary,
       ),
     );
   }
