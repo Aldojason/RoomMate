@@ -1,5 +1,8 @@
 const express = require("express");
 const Rotation = require("../models/Rotation");
+const {
+  processDailyTrashRotation,
+} = require("../services/trashRotationService");
 
 const router = express.Router();
 
@@ -48,6 +51,33 @@ router.get("/:type", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to get rotation",
+    });
+  }
+});
+
+router.post("/trash/process", async (req, res) => {
+  try {
+    const { dueDate } = req.body;
+
+    if (!dueDate) {
+      return res.status(400).json({
+        success: false,
+        message: "dueDate is required",
+      });
+    }
+
+    const task = await processDailyTrashRotation(dueDate);
+
+    res.json({
+      success: true,
+      task,
+    });
+  } catch (error) {
+    console.error("Process trash rotation error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 });
